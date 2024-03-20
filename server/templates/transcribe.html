@@ -103,20 +103,20 @@
                     <form id="settingsForm">
                         <div class="checkbox-group">
                             <label class="dark-mode-switch">
-                                <input id="dark-mode-switch" type="checkbox" onchange="changeDarkMode(this);">
+                                <input id="dark-mode-switch" type="checkbox" >
                                 <span class="slider round"></span>
                             </label>
                             <div id="dark-mode-switch-text">מצב כהה</div>
                         </div>
                         <div class="checkbox-group">
                             <label class="dark-mode-switch">
-                                <input id="auto-play-switch" type="checkbox" onchange="changeAutoPlayMode(this);">
+                                <input id="auto-play-switch" type="checkbox" >
                                 <span class="slider round"></span>
                             </label>
                             <div id="dark-mode-switch-text">הפעלה אוטומטית</div>
                         </div>
                         <div class="button-container">
-                            <button type="button" id="settingsSubmit">שמירה</button>
+                            <button type="button" id="settingsSubmit" >שמירה</button>
                         </div>
                     </form>
                 </div>
@@ -172,6 +172,32 @@
             return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
         }
 
+        function saveSettings() {
+            const darkMode = document.getElementById('dark-mode-switch').checked;
+            const autoPlay = document.getElementById('auto-play-switch').checked;
+
+            // Save settings in local storage
+            localStorage.setItem('darkMode', darkMode);
+            localStorage.setItem('autoPlay', autoPlay);
+            loadSettings()
+        }
+
+        function loadSettings() {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const autoPlay = localStorage.getItem('autoPlay') === 'true';
+
+            document.getElementById('dark-mode-switch').checked = darkMode;
+            document.getElementById('auto-play-switch').checked = autoPlay;
+
+            changeDarkMode(document.getElementById('dark-mode-switch'));
+            changeAutoPlayMode(document.getElementById('auto-play-switch'));
+        }
+
+        // Load settings from local storage on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSettings();
+        });
+        
         function fetchContent(prefetch) {
             // Make an API request to the server to get the text and audio data
             fetch(`/api/getContent`)
@@ -464,7 +490,7 @@
             // Close the modal
             settingsModal.style.display = "none";
 
-            // TODO: Save the settings
+            saveSettings()
         }
 
         
